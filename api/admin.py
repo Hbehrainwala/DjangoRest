@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.user import User
+from .models import User, Product, Order, OrderItem
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
@@ -67,15 +67,11 @@ class MyUserAdmin(AuthUserAdmin):
         }),
     )
     list_display = (
-        'id', 'email', 'first_name', 'last_name', 'administration_groups',
+        'id', 'email', 'first_name', 'last_name',
         'is_superuser',
     )
     search_fields = ['email', 'first_name', 'last_name']
     ordering = ('id',)
-
-    def administration_groups(self, obj):
-        return ', '.join([group.name for group in obj.groups.all()])
-
 
     staff_filter = {'customer_profile__allow_staff': True,}
 
@@ -89,3 +85,7 @@ class MyUserAdmin(AuthUserAdmin):
                 return AdminForm(*args, **kwargs)
 
         return AdminFormWithRequest
+
+admin.site.register(Product)
+admin.site.register(Order)
+admin.site.register(OrderItem)

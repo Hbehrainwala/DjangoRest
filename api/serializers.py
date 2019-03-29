@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Product
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,3 +21,50 @@ class UserCreateSerializer(serializers.ModelSerializer):
         if not User.objects.filter(email=attrs.get('email')).exists():
             return attrs
         raise serializers.ValidationError({"email": "This email is taken already."})
+
+
+class UserLoginSerializer(serializers.Serializer):
+    """
+    It's authentication serializer. it's valid method check if not valid user raise exception or if authenticate 
+    return user.
+    """
+    email = serializers.EmailField(label=("Email"))
+    password = serializers.CharField(label=("Password"), style={'input_type': 'password'})
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        if email and password:
+            user = User.objects.filter(email=email).first()
+            if user and user.check_password(password):
+                if not user.is_active:
+                    msg = ('User account is disabled.')
+                    raise serializers.ValidationError(msg, code='authorization')
+                attrs['user'] = user
+                return attrs   
+            msg = ('Unable to log in with provided credentials.')
+            raise serializers.ValidationError(msg, code='authorization')
+        msg = ('Must include "email" and "password".')
+        raise serializers.ValidationError(msg, code='authorization')
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('id', 'title', 'description', 'unit_single_name', 'unit_multi_name')
+
+class ProductCreateSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(required=True)
+    unit_single_name = serializers.CharField(required=True)
+    unit_multi_name = serializers.CharField(required=True)
+    price = serializers.DecimalField(required=True, max_digits=6, decimal_places=2)
+
+    class Meta:
+        model = Product
+        fields = ('title', 'description', 'unit_single_name', 'unit_multi_name', 'price')
+
+    def validate(self, attrs):
+        if not Product.objects.filter(title=attrs.get('title')).exists():
+            return attrs
+        raise serializers.ValidationError({"title": "This title is taken already."})

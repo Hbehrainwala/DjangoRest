@@ -4,8 +4,11 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
+router.register(r'products', views.ProductViewSet)
 
 
 urlpatterns = [
 	path('', include(router.urls)),
+	path('login/', views.UserLoginView.as_view(), name='user_login'),
+    path('logout/', views.UserLogoutView.as_view(), name='user_logout'),
 ]

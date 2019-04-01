@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 
-from .models import User, Product
+from .models import User, Product, Order
 from . import serializers
 
 
@@ -102,6 +102,32 @@ class ProductViewSet(viewsets.ModelViewSet):
             return Response({
                 'status': status.HTTP_201_CREATED,
                 'message': 'Product Added Successfully.',
+            })
+
+        return Response({
+            'status': status.HTTP_400_BAD_REQUEST,
+            'message': 'Please provide required fields.',
+            'error' : serializer.errors
+        })
+
+class OrderViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+
+    def get_queryset(self):
+        return self.queryset
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = serializers.OrderSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'status': status.HTTP_201_CREATED,
+                'message': 'Order Placed Successfully.',
             })
 
         return Response({

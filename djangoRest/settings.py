@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'allauth',
     'allauth.account',
+    'rest_framework.authtoken',
 )
 LOCAL_APPS = (
     'api.apps.ApiConfig',
@@ -145,6 +146,9 @@ AUTHENTICATION_BACKENDS = (
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
+
+    'rest_framework.authentication.BasicAuthentication',
+    'rest_framework.authentication.SessionAuthentication',
 )
 
 SITE_ID = 1

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Product
+from .models import User, Product, Order, OrderItem
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,3 +68,22 @@ class ProductCreateSerializer(serializers.ModelSerializer):
         if not Product.objects.filter(title=attrs.get('title')).exists():
             return attrs
         raise serializers.ValidationError({"title": "This title is taken already."})
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ('product', 'quantity')        
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
+    class Meta:
+        model = Order
+        fields = ('customer', 'provider', 'courier', 'status', 'payment_status', 'payment_types', 'order_items')
+
+    def create(self, validated_data, *args, **kwargs):
+        item_datas = validated_data.pop('order_items')
+        order = Order.objects.create(**validated_data)
+        for item_data in item_datas:
+            OrderItem.objects.create(order=order, **item_data)
+        return order

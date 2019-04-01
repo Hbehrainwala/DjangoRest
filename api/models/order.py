@@ -45,12 +45,15 @@ class Order(TimeStampedModel):
 	payment_status = models.SmallIntegerField(choices=PAYMENT_STATUSES, default=PAYMENT_STATUS.UNPAID)
 	payment_types = models.SmallIntegerField(choices=PAYMENT_TYPES, default=PAYMENT_TYPE.ONLINE)
 
+	def __str__(self):
+		return self.customer.email
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey('Order', related_name="order_items", on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True)
     quantity = models.IntegerField()
-    discount_percent = models.FloatField()
+    discount_percent = models.FloatField(default=0)
     discount_price = MoneyField(max_digits=6, decimal_places=2, default_currency='USD')
     price = MoneyField(max_digits=6, decimal_places=2, default_currency='USD')
 

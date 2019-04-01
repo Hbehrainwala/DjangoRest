@@ -48,6 +48,14 @@ class Order(TimeStampedModel):
 	def __str__(self):
 		return self.customer.email
 
+	@property
+	def total_price(self):
+		amount = 0
+		for item in self.order_items.all():
+			amount += item.price.amount * item.quantity
+		return amount
+			
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey('Order', related_name="order_items", on_delete=models.CASCADE)

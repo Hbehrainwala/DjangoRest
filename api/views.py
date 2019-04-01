@@ -5,6 +5,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 from .models import User, Product, Order
 from . import serializers
@@ -69,12 +70,11 @@ class UserLoginView(APIView):
             'user' : serializers.UserSerializer(user).data
         }, headers=headers)
 
-#TODO - Fix logout api
 class UserLogoutView(APIView):
     """
     IT's user logout view. accepted method post. endpoint is /api/logout.
     """
-    # permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         token = Token.objects.get(key=request.auth.key)
@@ -112,7 +112,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class OrderViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows users to be viewed or edited.
+    API endpoint that allows users create and fetch orders.
     """
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer

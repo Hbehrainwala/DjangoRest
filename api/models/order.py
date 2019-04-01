@@ -65,4 +65,7 @@ class OrderItem(models.Model):
         verbose_name = 'Order Item'
         verbose_name_plural = 'Order Items'
 
+    def __str__(self):
+    	return '{} - {}'.format(self.product.title, self.quantity)
+
 	

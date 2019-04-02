@@ -1,10 +1,11 @@
+from django import forms
 from django.contrib import admin
-from .models import User, Product, Order, OrderItem
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.translation import ugettext_lazy as _
 
-# Register your models here.
+from .models import User, Product, Order, OrderItem
+
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -53,7 +54,7 @@ class MyUserAdmin(AuthUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'customer', 'provider', 'courier')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
                                        'groups', 'user_permissions')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
@@ -90,7 +91,17 @@ class OrderItemInline(admin.TabularInline):
     model=OrderItem
     extra = 0
 
+class OrderAdminForm(forms.ModelForm):
+    model = Order
+
+    def __init__(self, *args, **kwargs):
+        super(OrderAdminForm, self).__init__(*args, **kwargs)
+        self.fields['customer'].queryset = User.objects.filter(customer=True)
+        self.fields['provider'].queryset = User.objects.filter(provider=True)
+        self.fields['courier'].queryset = User.objects.filter(courier=True)
+
 class OrderAdmin(admin.ModelAdmin):
+    form = OrderAdminForm
     inlines = [
         OrderItemInline,
     ]

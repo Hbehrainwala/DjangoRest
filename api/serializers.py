@@ -52,7 +52,7 @@ class UserLoginSerializer(serializers.Serializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('id', 'title', 'description', 'unit_single_name', 'unit_multi_name')
+        fields = ('id', 'title', 'description', 'unit_price', 'unit_single_name', 'unit_multi_name')
 
 class ProductCreateSerializer(serializers.ModelSerializer):
     title = serializers.CharField(required=True)
@@ -73,7 +73,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ('product', 'quantity')        
+        fields = ('product', 'quantity', 'subtotal')    
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)

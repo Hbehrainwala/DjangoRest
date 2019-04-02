@@ -14,3 +14,8 @@ class Product(TitleSlugDescriptionModel):
 
     def __str__(self):
         return self.title
+
+    @property
+    def unit_price(self):
+    	return self.price.amount
+    

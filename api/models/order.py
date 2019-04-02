@@ -76,4 +76,9 @@ class OrderItem(models.Model):
     def __str__(self):
     	return '{} - {}'.format(self.product.title, self.quantity)
 
+    @property
+    def subtotal(self):
+    	return self.price.amount * self.quantity
+    
+
 	

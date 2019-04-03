@@ -91,6 +91,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     """
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    # permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return self.queryset
@@ -123,16 +124,22 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        serializer = serializers.OrderSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'status': status.HTTP_201_CREATED,
-                'message': 'Order Placed Successfully.',
-            })
+        if request.user.is_authenticated:
+            serializer = serializers.OrderSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save(customer=request.user)
+                return Response({
+                    'status': status.HTTP_201_CREATED,
+                    'message': 'Order Placed Successfully.',
+                })
 
-        return Response({
-            'status': status.HTTP_400_BAD_REQUEST,
-            'message': 'Please provide required fields.',
-            'error' : serializer.errors
-        })
+            return Response({
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'Please provide required fields.',
+                'error' : serializer.errors
+            })
+        else:
+            return Response({
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'You need to login.',
+            })

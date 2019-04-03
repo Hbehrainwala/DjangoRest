@@ -76,6 +76,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ('product', 'quantity', 'subtotal')    
 
 class OrderSerializer(serializers.ModelSerializer):
+    customer = serializers.CharField(required=False)
     order_items = OrderItemSerializer(many=True)
     class Meta:
         model = Order

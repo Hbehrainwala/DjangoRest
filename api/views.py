@@ -28,10 +28,11 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer.save()
             user = serializer.instance
             user.set_password(data.get('password'))
+            user.customer = True
             user.save()
             return Response({
                 'status': status.HTTP_201_CREATED,
-                'message': 'User Created Successfully.',
+                'message': 'Customer Signup Successfully.',
             })
 
         return Response({

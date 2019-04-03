@@ -68,7 +68,7 @@ class MyUserAdmin(AuthUserAdmin):
         }),
     )
     list_display = (
-        'id', 'email', 'first_name', 'last_name',
+        'id', 'email', 'customer', 'provider', 'courier', 
         'is_superuser',
     )
     search_fields = ['email', 'first_name', 'last_name']

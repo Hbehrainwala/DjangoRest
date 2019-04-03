@@ -91,9 +91,9 @@ WSGI_APPLICATION = 'djangoRest.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-       'NAME':  'rest_django_database',
-       'USER': 'rails', #DB_USER,
-       'PASSWORD': 'rails', #DB_PASSWORD,
+       'NAME':  'rest_django',
+       'USER': 'rails',
+       'PASSWORD': 'rails',
        'HOST': 'localhost',
        'PORT': '',
    }

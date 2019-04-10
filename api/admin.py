@@ -106,6 +106,10 @@ class OrderAdmin(admin.ModelAdmin):
         OrderItemInline,
     ]
 
+    list_display = ('customer', 'provider', 'total_price')
+    list_filter = ['customer__email', 'status', 'payment_status', 'payment_types']
+    # list_editable = ('provider',)
+
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Product)

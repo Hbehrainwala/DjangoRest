@@ -55,7 +55,7 @@ class Order(TimeStampedModel):
 	@property
 	def total_price(self):
 		amount = 0
-			for item in self.order_items.all():
+		for item in self.order_items.all():
 			amount += item.price.amount * item.quantity
 		return amount
 

@@ -5,15 +5,19 @@ from djmoney.models.fields import MoneyField
 class Order(TimeStampedModel):
 	class STATE:
 		CREATED = 0
-		PREPARED = 1
-		PICKUP = 2
-		DELIVERED = 3
-		CANCELLED = 4
-		FAILED = 5
+		ACCEPTED = 1
+		PREPARED = 2
+		ASSIGNED = 3
+		PICKUP = 4
+		DELIVERED = 5
+		CANCELLED = 6
+		FAILED = 7
 
 	ORDER_STATUSES = (
         (STATE.CREATED, 'Created'),
+        (STATE.ACCEPTED, 'Accepted'),
         (STATE.PREPARED, 'Prepared'),
+        (STATE.ASSIGNED, 'Assigned'),
         (STATE.PICKUP, 'Pickup'),
         (STATE.DELIVERED, 'Delivered'),
         (STATE.CANCELLED, 'Cancelled'),
@@ -51,11 +55,13 @@ class Order(TimeStampedModel):
 	@property
 	def total_price(self):
 		amount = 0
-		for item in self.order_items.all():
+			for item in self.order_items.all():
 			amount += item.price.amount * item.quantity
 		return amount
-			
 
+	@property
+	def check_for_accept(self):
+		return True if self.status == self.STATE.CREATED else False
 
 class OrderItem(models.Model):
     order = models.ForeignKey('Order', related_name="order_items", on_delete=models.CASCADE)

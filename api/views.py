@@ -170,4 +170,26 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response({
             'status': status.HTTP_400_BAD_REQUEST,
             'message': 'Only provider accept order.',
-        })            
+        })
+
+    #TODO: Restrict order cancelation for some states
+    @action(detail=True)
+    def cancel_order(self, request, pk=None):
+        if request.user.customer:
+            order = Order.objects.filter(pk=int(pk)).first()
+            if not order:
+                return Response({
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'message': 'No order found.',
+                })
+            order.state = Order.STATE.CANCELLED
+            order.save()
+            return Response({
+                'status': status.HTTP_200_OK,
+                'message': 'Your order is cancelled..',
+            })
+
+        return Response({
+            'status': status.HTTP_400_BAD_REQUEST,
+            'message': 'Only Customer can cancel order.',
+        })

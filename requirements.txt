@@ -7,7 +7,7 @@ setuptools==40.8.0
 wheel==0.33.1
 
 django-filter==2.1.0  
-djangorestframework==3.9.2  
+djangorestframework==3.11.2  
 Markdown==3.1
 
 django-extensions==2.1.6
